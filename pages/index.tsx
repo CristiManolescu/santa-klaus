@@ -45,18 +45,18 @@ export default function Home() {
   };
 
   return (
-    <main className={`  ${inter.className}`}>
+    <main className={`${inter.className}`}>
       {childName !== "" ? (
-        <div className="flex min-h-screen flex-col items-center gap-2 p-24 bg-green-800 transition-shadow">
-          <Image src={logo} alt="logo" width="300" height="300" className="" />
-          <div className="w-[60%] h-[600px] ml-2 p-2 border border-black bg-slate-100 rounded-lg overflow-y-scroll flex flex-col-reverse ">
+        <div className="flex min-h-screen flex-col items-center gap-2 w-full bg-green-800 transition-shadow">
+          <Image src={logo} alt="logo" width="300" height="300" />
+          <div className="w-full md:w-[60%] h-[400px] p-2 border border-black bg-slate-100 rounded-lg overflow-y-scroll flex flex-col-reverse ">
             {chatMessages.map((message) => (
               <ChatMessage key={message} message={message} />
             ))}
           </div>
           <form
             onSubmit={handleSend}
-            className="flex justify-center w-[60%] p-2 ml-2 border border-black rounded-lg bg-red-700"
+            className="flex justify-center w-full md:w-[60%] p-2 border border-black rounded-lg bg-red-700"
           >
             <input
               className="p-2 w-full rounded-lg"
@@ -72,14 +72,25 @@ export default function Home() {
           </form>
         </div>
       ) : (
-        <form
-          onSubmit={handleName}
-          className="flex min-h-screen flex-col items-center gap-2 p-24 bg-green-800 "
-        >
-          <h1>Care este numele tau?</h1>
-          <input ref={input} type="text" />
-          <button>Trimite</button>
-        </form>
+        <div className="flex min-h-screen bg-green-800">
+          <form
+            onSubmit={handleName}
+            className="flex flex-col w-[60%] m-auto items-center gap-2 bg-green-800"
+          >
+            <h1 className="text-xl font-bold">Care este numele tau?</h1>
+            <div className="flex">
+              <input
+                ref={input}
+                type="text"
+                className="p-2 m-auto rounded-lg"
+                placeholder="Pe mine ma cheama.."
+              />
+              <button className="p-2 bg-red-700 text-white rounded-lg m-2">
+                Trimite
+              </button>
+            </div>
+          </form>
+        </div>
       )}
     </main>
   );
