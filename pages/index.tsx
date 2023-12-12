@@ -47,16 +47,22 @@ export default function Home() {
   return (
     <main className={`${inter.className}`}>
       {childName !== "" ? (
-        <div className="flex min-h-screen flex-col items-center gap-2 w-full bg-green-800 transition-shadow">
-          <Image src={logo} alt="logo" width="300" height="300" />
-          <div className="w-full md:w-[60%] h-[400px] p-2 border border-black bg-slate-100 rounded-lg overflow-y-scroll flex flex-col-reverse ">
+        <div className="flex min-h-screen flex-col items-center w-full bg-green-800 transition-shadow">
+          <Image
+            src={logo}
+            alt="logo"
+            width="300"
+            height="300"
+            className="w-[250px] h-[250px] md:w-[300px] md:h-[300px]"
+          />
+          <div className="w-full md:w-[60%] h-[400px] p-2 border border-black bg-slate-100 rounded-lg overflow-y-scroll flex flex-col-reverse shadow-lg">
             {chatMessages.map((message) => (
               <ChatMessage key={message} message={message} />
             ))}
           </div>
           <form
             onSubmit={handleSend}
-            className="flex justify-center w-full md:w-[60%] p-2 border border-black rounded-lg bg-red-700"
+            className="flex justify-center w-full md:w-[60%] p-2 mt-2 border border-black rounded-lg bg-red-700 shadow-lg"
           >
             <input
               className="p-2 w-full rounded-lg"
