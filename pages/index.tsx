@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import logo from "@/public/santaLogo.png";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import openai from "@/utils/openai";
 import ChatMessage from "@/components/ChatMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const message = useRef<HTMLInputElement>(null);
+  const [msg, setMsg] = useState<string>("");
   const [chatMessages, setChatMessages] = useState<string[]>([]);
 
   useEffect(() => {
@@ -30,12 +30,25 @@ export default function Home() {
     ]);
   };
 
-  const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const santaRequest = async (msg: string) => {
+    const gptQuery = `Nu uita ca esti Mos Craciun! Raspunde urmatorului mesaj trimis de un copil catre tine: ${msg}`;
+
+    const gptResults = await openai.chat.completions.create({
+      messages: [{ role: "user", content: gptQuery }],
+      model: "gpt-3.5-turbo",
+    });
+
     setChatMessages((chatMessages) => [
-      `Copil: ${message.current!.value}`,
+      `Mos Craciun🎅: ${gptResults.choices[0].message.content}`,
       ...chatMessages,
     ]);
+  };
+
+  const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setChatMessages((chatMessages) => [`Copil: ${msg}`, ...chatMessages]);
+    santaRequest(msg);
+    setMsg("");
   };
 
   return (
@@ -53,9 +66,12 @@ export default function Home() {
         className="flex justify-center w-[60%] p-2 ml-2 border border-black rounded-lg"
       >
         <input
-          ref={message}
           className="p-2 w-full rounded-lg"
           placeholder="Spune-i mosului ce-ti doresti sa-ti aduca!"
+          value={msg}
+          onChange={(e) => {
+            setMsg(e.target.value);
+          }}
         />
         <button className="px-2 mx-2 bg-green-100 rounded-lg">Trimite</button>
       </form>
