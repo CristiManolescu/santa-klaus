@@ -1,15 +1,18 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import logo from "@/public/santaLogo.png";
+import background from "@/public/backgroundApp.jpg";
+import santaAvatar from "@/public/test.jpg";
 import { useRef, useState } from "react";
 import openai from "@/utils/openai";
 import ChatMessage from "@/components/ChatMessage";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [msg, setMsg] = useState<string>("");
   const [childName, setChildName] = useState<string>("");
+  const [isWritting, setIsWritting] = useState<boolean>(false);
   const [chatMessages, setChatMessages] = useState<string[]>([
     "Mos Craciun🎅: Buna! Bine ai venit pe aplicatia mea! Daca vrei sa imi spui ce iti doresti de Craciun sau doar vrei sa discuti cu mine, scrie-mi mai jos!",
   ]);
@@ -27,6 +30,7 @@ export default function Home() {
       `Mos Craciun🎅: ${gptResults.choices[0].message.content}`,
       ...chatMessages,
     ]);
+    setIsWritting(false);
   };
 
   const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,6 +39,7 @@ export default function Home() {
       `${childName}: ${msg}`,
       ...chatMessages,
     ]);
+    setIsWritting(true);
     santaRequest(msg);
     setMsg("");
   };
@@ -46,23 +51,39 @@ export default function Home() {
 
   return (
     <main className={`${inter.className}`}>
+      <Head>
+        <title>Chat-ul lui Mos Craciun</title>
+      </Head>
+      <div className="absolute">
+        <Image
+          src={background}
+          className="h-screen object-cover"
+          alt="background"
+        />
+      </div>
       {childName !== "" ? (
-        <div className="flex min-h-screen flex-col items-center w-full bg-green-800 transition-shadow">
-          <Image
-            src={logo}
-            alt="logo"
-            width="300"
-            height="300"
-            className="w-[250px] h-[250px] md:w-[300px] md:h-[300px]"
-          />
-          <div className="w-full md:w-[60%] h-[400px] p-2 border border-black bg-slate-100 rounded-lg overflow-y-scroll flex flex-col-reverse shadow-lg">
-            {chatMessages.map((message) => (
-              <ChatMessage key={message} message={message} />
+        <div className="flex min-h-screen flex-col items-center justify-center transition-shadow absolute shadow-lg sm:left-[20%] sm:right-[20%] m-2">
+          <div className="flex items-center gap-x-2 border-x border-t border-black/70 rounded-t-lg w-full md:w-[60%] bg-red-700 p-2 text-white bg-opacity-90">
+            <Image
+              src={santaAvatar}
+              width="70"
+              height="70"
+              alt="santa avatar"
+              className="rounded-full "
+            ></Image>
+            <div>
+              <h1 className="font-bold">Mos Craciun</h1>
+              {isWritting && <p>iti raspunde acum..</p>}
+            </div>
+          </div>
+          <div className="w-full md:w-[60%] h-[400px] p-2 border-x border-black bg-slate-100 overflow-y-scroll flex flex-col-reverse shadow-lg bg-opacity-90">
+            {chatMessages.map((message, index) => (
+              <ChatMessage key={index} message={message} />
             ))}
           </div>
           <form
             onSubmit={handleSend}
-            className="flex justify-center w-full md:w-[60%] p-2 mt-2 border border-black rounded-lg bg-red-700 shadow-lg"
+            className="flex justify-center w-full md:w-[60%] p-2 border border-black rounded-b-lg bg-red-700 shadow-lg bg-opacity-90"
           >
             <input
               className="p-2 w-full rounded-lg"
@@ -78,17 +99,17 @@ export default function Home() {
           </form>
         </div>
       ) : (
-        <div className="flex min-h-screen bg-green-800">
+        <div className="fixed top-[40%] right-0 left-0 sm:right-[40%] sm:left-[40%]">
           <form
             onSubmit={handleName}
-            className="flex flex-col w-[60%] m-auto items-center gap-2 bg-green-800"
+            className="flex flex-col p-2 gap-2 bg-white rounded-lg bg-opacity-80 sm:fixed mx-5"
           >
             <h1 className="text-xl font-bold">Care este numele tau?</h1>
             <div className="flex">
               <input
                 ref={input}
                 type="text"
-                className="p-2 m-auto rounded-lg"
+                className="p-2 m-auto rounded-lg border border-black/70"
                 placeholder="Pe mine ma cheama.."
               />
               <button className="p-2 bg-red-700 text-white rounded-lg m-2">
